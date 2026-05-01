@@ -1,29 +1,29 @@
----
-title: "afn-lab's Homelab Infra"
----
-
-# Membangun Private Cloud Ketersediaan Tinggi untuk Ekosistem School/Kampus
+# Merancang Private Cloud yang Teroptimasi untuk Ekosistem Sekolah/Kampus
 
 *Baca dalam bahasa lain: [English](README.md), [Bahasa Indonesia](README-id.md).*
 
 ## 1. Ringkasan Eksekutif
-Merancang, men-deploy, dan saat ini mengelola infrastruktur *private cloud* yang tangguh menggunakan Proxmox VE. Lingkungan ini berfungsi sebagai tulang punggung digital untuk institusi pendidikan dengan lalu lintas tinggi, menangani Ujian Berbasis Komputer (CBT) tanpa hambatan untuk 400+ pengguna serentak, penyimpanan *cloud* internal, dan perutean jaringan yang aman.
+Merancang dan mengelola infrastruktur *Private Cloud* yang efisien menggunakan Proxmox VE sebagai tulang punggung layanan digital institusi pendidikan. Sistem ini dioptimalkan untuk menangani beban kerja intensif, terbukti sukses melayani **400+ pengguna serentak** pada platform CBT tanpa kendala performa, dengan fokus pada stabilitas layanan dan efisiensi sumber daya *hardware*.
 
-## 2. Arsitektur & Teknologi
+## 2. Arsitektur Sistem & Manajemen Sumber Daya
 
-![Proxmox VE Dashboard](proxmox-dashboard.png)
+![Dashboard Proxmox VE](proxmox-dashboard.png)
+*Dashboard Proxmox VE: Manajemen terpusat untuk seluruh kontainer LXC dan VM QEMU.*
 
-Berdasarkan topologi lingkungan di atas, infrastruktur dipisahkan ke dalam kontainer LXC dan VM QEMU yang dioptimalkan untuk memaksimalkan sumber daya *bare-metal*:
+Infrastruktur ini didesain dengan pendekatan isolasi layanan untuk menjaga stabilitas dan memaksimalkan penggunaan server fisik:
 
-* **Hypervisor:** Proxmox VE 8.x
-* **Core Routing (QEMU VM):** MikroTik CHR v7 berfungsi sebagai gerbang jaringan utama, menangani VLAN dan *load balancing*.
-* **Observability & Monitoring (LXC):** `uptimekuma` untuk pelacakan kesehatan layanan dan latensi jaringan secara *real-time*.
-* **Zero Trust & Security (LXC):** `cloudflared` untuk *tunneling* eksternal yang aman dan `adguard` untuk penyaringan DNS dan pemblokiran iklan di seluruh jaringan.
-* **Web Server & Production Apps (LXC):**
-    * `moodle` & `garuda-cbt`: Platform ujian berkonkurensi tinggi.
-    * `nextcloud` & `onlyoffice`: Suite kolaborasi dokumen on-premise yang di-host secara mandiri.
-* **Network Hacks & Optimization:** `nginx-ncsibypass` direkayasa khusus untuk memanipulasi Indikator Status Konektivitas Jaringan milik Microsoft, memaksa perangkat klien untuk tetap terhubung ke jaringan luring lokal selama ujian berlangsung.
+* **Routing Inti:** MikroTik CHR v7 (VM) sebagai *gateway* jaringan utama, menangani distribusi VLAN dan manajemen *bandwidth* klien.
+* **Keamanan & Akses:** `cloudflared` untuk jalur akses eksternal yang aman dan `adguard` sebagai pelindung DNS tingkat lanjut.
+* **Layanan Produksi:** Klaster aplikasi ujian `moodle` & `garuda-cbt` yang berjalan di atas LXC untuk mencapai latensi rendah.
+* **Ruang Kerja Digital:** `nextcloud` & `onlyoffice` sebagai solusi kolaborasi dokumen internal mandiri.
+* **Observabilitas:** `uptimekuma` untuk pemantauan kesehatan seluruh layanan secara *real-time*.
 
-## 3. Sorotan Teknis Utama
-* **Efisiensi Sumber Daya:** Memaksimalkan penggunaan LXC (*Linux Containers*) dibandingkan VM berat untuk *deployment* aplikasi, menghasilkan penggunaan CPU yang sangat rendah dan jejak RAM yang minimal.
-* **Segmentasi Jaringan:** Menjaga jaringan tetap terpisah secara logis dengan menempatkan *router* inti (MikroTik CHR) di dalam *hypervisor*, menciptakan lingkungan "Router on a Stick" sejati di dalam Proxmox.
+## 3. Strategi Resiliensi & Pemeliharaan
+Meskipun berjalan pada lingkungan *single-node*, keamanan data dan keberlangsungan layanan tetap menjadi prioritas utama melalui:
+* **Pemulihan Bencana Otomatis:** Implementasi jadwal *backup* rutin ke penyimpanan eksternal untuk menjamin keamanan data jika terjadi kegagalan sistem.
+* **Optimasi Lalu Lintas:** Penggunaan `nginx-ncsibypass` kustom untuk menjaga stabilitas koneksi perangkat klien di dalam jaringan lokal.
+* **Peringatan Proaktif:** Integrasi pemantauan dengan notifikasi Telegram untuk respon cepat terhadap anomali layanan.
+
+## 4. Sorotan Engineering
+* **Efisiensi Sumber Daya Maksimal:** Penggunaan intensif LXC (Linux Containers) untuk menjalankan aplikasi berat, menghasilkan penggunaan CPU dan RAM yang sangat rendah dibandingkan VM konvensional.
+* **Presisi Jaringan:** Implementasi *Router-on-a-Stick* di dalam hypervisor untuk pemisahan lalu lintas yang rapi dan aman antar segmen jaringan.
