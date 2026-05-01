@@ -1,5 +1,7 @@
 # Architecting a High-Availability Private Cloud for Campus Ecosystem
 
+*Read this in other languages: [English](README.md), [Bahasa Indonesia](README-id.md).*
+
 ## 1. Executive Summary
 Designed, deployed, and currently managing a robust private cloud infrastructure using Proxmox VE. This environment serves as the digital backbone for a high-traffic educational institution, handling seamless Computer-Based Tests (CBT) for 400+ concurrent users, private cloud storage, and secure network routing.
 
