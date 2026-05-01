@@ -2,7 +2,7 @@
 title: "afn-lab's Homelab Infra"
 ---
 
-# Architecting an Advanced Private Cloud & Network Infrastructure for Campus Ecosystem
+# Architecting an Advanced Private Cloud & Network Infrastructure for School Ecosystem
 
 *Read this in other languages: [English](README.md), [Bahasa Indonesia](README-id.md).*
 
