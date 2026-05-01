@@ -2,7 +2,7 @@
 title: "afn-lab's Homelab Infra"
 ---
 
-# Merancang Arsitektur Private Cloud & Jaringan Tingkat Lanjut untuk Ekosistem Kampus
+# Merancang Arsitektur Private Cloud & Jaringan Tingkat Lanjut untuk Ekosistem Sekolah
 
 *Baca dalam bahasa lain: [English](README.md), [Bahasa Indonesia](README-id.md).*
 
