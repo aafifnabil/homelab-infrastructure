@@ -2,32 +2,32 @@
 title: "afn-lab's Homelab Infra"
 ---
 
-# Architecting an Optimized Private Cloud for School/Campus Ecosystem
+# Architecting an Advanced Hybrid Private Cloud for Educational Ecosystem
 
 *Read this in other languages: [English](README.md), [Bahasa Indonesia](README-id.md).*
 
 ## 1. Executive Summary
-Designed and currently managing an efficient Private Cloud infrastructure using Proxmox VE as the digital backbone for educational institutions. This system is optimized to handle intensive workloads, successfully serving **400+ concurrent users** on CBT platforms without performance degradation, focusing on service stability and hardware resource efficiency.
+Designed, deployed, and currently managing a highly optimized Private Cloud infrastructure using Proxmox VE. This project serves as the digital backbone for an educational institution, engineered to deliver hybrid capabilities (Online & Local network). The system seamlessly handles **400+ concurrent users** during massive CBT exams while providing advanced network management, content filtering, and an integrated development environment for custom applications.
 
-## 2. System Architecture & Resource Management
+## 2. System Architecture & Core Services
 
 ![Proxmox VE Dashboard](proxmox-dashboard.png)
-*Proxmox VE Dashboard: Centralized management for all LXC containers and QEMU VMs.*
+*Proxmox VE Dashboard: Centralized management for LXC containers, QEMU VMs, and Docker environments.*
 
-The infrastructure is designed with a service-isolation approach to maintain stability and maximize bare-metal resources:
+The infrastructure is heavily segmented to ensure performance, security, and resource efficiency:
 
-* **Core Routing:** MikroTik CHR v7 (VM) acting as the network gateway, handling VLAN distribution and client bandwidth management.
-* **Security & Access:** `cloudflared` for secure external tunneling and `adguard` for advanced DNS-level protection.
-* **Production Services:** Application clusters for `moodle` & `garuda-cbt` running on LXC to achieve near-zero latency.
-* **Digital Workspace:** `nextcloud` & `onlyoffice` as a self-hosted internal document collaboration suite.
-* **Observability:** `uptimekuma` for real-time health monitoring of all services.
+* **Advanced Core Routing (MikroTik CHR):** The network brain configured with enterprise-grade features including **Load Balancing**, **Multi-WAN Failover**, and **VRRP** (Virtual Router Redundancy Protocol) to ensure zero downtime on network gateways.
+* **Hybrid CBT Engine (Online & Offline):** An adaptive examination system running on lightweight LXC. It provides worldwide access via `cloudflared` Zero Trust Tunnels, while simultaneously supporting isolated local network exams utilizing a custom **`nginx-ncsibypass`** configuration to maintain stable Windows client connections without internet access.
+* **DNS Management & Content Filtering:** Centralized `adguard` deployment acting as a DNS sinkhole to aggressively block ads, malware, and filter inappropriate websites, ensuring a safe digital environment for students.
+* **Self-Hosted Digital Workspace:** `nextcloud` deployment serving as a secure, private file server and collaboration suite for school administration.
+* **Custom App Development & Containerization:** A dedicated **Docker** environment utilized to develop, test, and host **ANSimpleLibrary**—a proprietary, custom-built library management application, showcasing full-cycle Dev/Ops capabilities.
 
 ## 3. Resilience & Maintenance Strategy
-Despite operating in a single-node environment, data security and service continuity remain top priorities through:
-* **Automated Disaster Recovery:** Implementation of routine backup schedules to external storage to ensure data safety in case of system failure.
-* **Traffic Optimization:** Custom `nginx-ncsibypass` engineering to maintain stable client connectivity within the local network.
-* **Proactive Alerting:** Integrated monitoring with Telegram notifications for rapid response to service anomalies.
+To maximize uptime and data integrity on a single-node hypervisor, I implemented a strict resilience framework:
+* **Automated Disaster Recovery:** Scheduled, off-site data backups to external storage to guarantee a fast Recovery Time Objective (RTO).
+* **Traffic Optimization:** Fine-tuned bandwidth queues and routing rules within MikroTik to prevent bottlenecking during massive concurrent exam logins.
+* **Proactive Alerting:** Integrated `uptimekuma` for real-time observability, pushing instant anomaly notifications directly to Telegram.
 
 ## 4. Engineering Highlights
-* **Maximum Resource Efficiency:** Extensive use of LXC (Linux Containers) to run heavy applications, resulting in significantly lower CPU and RAM overhead compared to conventional VMs.
-* **Network Precision:** Implementation of "Router-on-a-Stick" within the hypervisor for clean and secure traffic segmentation.
+* **Full-Stack Competency:** Successfully bridging Infrastructure operations (Proxmox, MikroTik, Networking) with Software deployment (Dockerizing custom applications).
+* **Maximum Resource Efficiency:** Extensive use of Linux Containers (LXC) and Docker over traditional VMs, slashing CPU and RAM overhead while maximizing throughput.
