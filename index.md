@@ -2,32 +2,34 @@
 title: "afn-lab's Homelab Infra"
 ---
 
-# Architecting an Advanced Hybrid Private Cloud for Educational Ecosystem
+# Architecting an Advanced Private Cloud & Network Infrastructure for Campus Ecosystem
 
 *Read this in other languages: [English](README.md), [Bahasa Indonesia](README-id.md).*
 
 ## 1. Executive Summary
-Designed, deployed, and currently managing a highly optimized Private Cloud infrastructure using Proxmox VE. This project serves as the digital backbone for an educational institution, engineered to deliver hybrid capabilities (Online & Local network). The system seamlessly handles **400+ concurrent users** during massive CBT exams while providing advanced network management, content filtering, and an integrated development environment for custom applications.
+Designed, deployed, and currently managing a comprehensive Private Cloud and Advanced Networking infrastructure using Proxmox VE. Built to serve educational institutions, this system seamlessly handles **400+ concurrent users** on CBT platforms. The architecture blends robust network engineering, hybrid access environments, and a dedicated DevOps sandbox to deliver high performance, security, and zero-downtime capabilities.
 
-## 2. System Architecture & Core Services
+## 2. Core Architecture & Services
 
 ![Proxmox VE Dashboard](proxmox-dashboard.png)
 *Proxmox VE Dashboard: Centralized management for LXC containers, QEMU VMs, and Docker environments.*
 
-The infrastructure is heavily segmented to ensure performance, security, and resource efficiency:
+The infrastructure is segregated into distinct operational layers to ensure absolute security and resource efficiency:
 
-* **Advanced Core Routing (MikroTik CHR):** The network brain configured with enterprise-grade features including **Load Balancing**, **Multi-WAN Failover**, and **VRRP** (Virtual Router Redundancy Protocol) to ensure zero downtime on network gateways.
-* **Hybrid CBT Engine (Online & Offline):** An adaptive examination system running on lightweight LXC. It provides worldwide access via `cloudflared` Zero Trust Tunnels, while simultaneously supporting isolated local network exams utilizing a custom **`nginx-ncsibypass`** configuration to maintain stable Windows client connections without internet access.
-* **DNS Management & Content Filtering:** Centralized `adguard` deployment acting as a DNS sinkhole to aggressively block ads, malware, and filter inappropriate websites, ensuring a safe digital environment for students.
-* **Self-Hosted Digital Workspace:** `nextcloud` deployment serving as a secure, private file server and collaboration suite for school administration.
-* **Custom App Development & Containerization:** A dedicated **Docker** environment utilized to develop, test, and host **ANSimpleLibrary**—a proprietary, custom-built library management application, showcasing full-cycle Dev/Ops capabilities.
+* **Advanced Edge Routing & Gateway (MikroTik CHR v7):**
+  * Engineered with **Load Balancing** and **Dual-WAN Failover** to guarantee uninterrupted connectivity.
+  * Implemented **VRRP (Virtual Router Redundancy Protocol)** for gateway redundancy and high availability at the network layer.
+* **Enterprise DNS & Security Filtering:**
+  * Deployed `adguard` as a DNS sinkhole for network-wide ad-blocking, malicious website filtering, and automated safe-search enforcement for students.
+* **Hybrid E-Learning & CBT Ecosystem (`moodle` & `garuda-cbt`):**
+  * **Online Mode:** Secure remote access routed through Zero Trust Tunnels (`cloudflared`).
+  * **Offline/Strict Exam Mode:** Local network lockdown to prevent cheating. Utilizing a custom **`nginx-ncsibypass`** to simulate internet connectivity for Windows clients (preventing captive portal errors) while physically dropping WAN access, ensuring students cannot browse the internet during exams.
+* **Self-Hosted Digital Workspace:**
+  * Deployed `nextcloud` to establish a sovereign, internal file server and document collaboration suite, ensuring full data privacy.
+* **DevOps & App Development Sandbox:**
+  * Provisioned a dedicated Docker environment for CI/CD testing and deploying in-house applications, specifically hosting the proprietary library management system, **ANSimpleLibrary**.
 
-## 3. Resilience & Maintenance Strategy
-To maximize uptime and data integrity on a single-node hypervisor, I implemented a strict resilience framework:
-* **Automated Disaster Recovery:** Scheduled, off-site data backups to external storage to guarantee a fast Recovery Time Objective (RTO).
-* **Traffic Optimization:** Fine-tuned bandwidth queues and routing rules within MikroTik to prevent bottlenecking during massive concurrent exam logins.
-* **Proactive Alerting:** Integrated `uptimekuma` for real-time observability, pushing instant anomaly notifications directly to Telegram.
-
-## 4. Engineering Highlights
-* **Full-Stack Competency:** Successfully bridging Infrastructure operations (Proxmox, MikroTik, Networking) with Software deployment (Dockerizing custom applications).
-* **Maximum Resource Efficiency:** Extensive use of Linux Containers (LXC) and Docker over traditional VMs, slashing CPU and RAM overhead while maximizing throughput.
+## 3. Resilience & Optimization Strategy
+* **Automated Disaster Recovery:** Scheduled snapshot backups to external storage to ensure rapid Recovery Time Objective (RTO).
+* **Resource Maximization:** Strategic utilization of LXC (Linux Containers) for production services and Docker for development, drastically reducing CPU/RAM overhead compared to traditional VMs.
+* **Observability:** Centralized real-time health monitoring and proactive alerting via `uptimekuma` integrated with Telegram bots.
