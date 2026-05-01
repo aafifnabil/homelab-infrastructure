@@ -2,28 +2,32 @@
 title: "afn-lab's Homelab Infra"
 ---
 
-# Architecting a High-Availability Private Cloud for School/Campus Ecosystem
+# Architecting an Optimized Private Cloud for School/Campus Ecosystem
 
 *Read this in other languages: [English](README.md), [Bahasa Indonesia](README-id.md).*
 
 ## 1. Executive Summary
-Designed, deployed, and currently managing a robust private cloud infrastructure using Proxmox VE. This environment serves as the digital backbone for a high-traffic educational institution, handling seamless Computer-Based Tests (CBT) for 400+ concurrent users, private cloud storage, and secure network routing.
+Designed and currently managing an efficient Private Cloud infrastructure using Proxmox VE as the digital backbone for educational institutions. This system is optimized to handle intensive workloads, successfully serving **400+ concurrent users** on CBT platforms without performance degradation, focusing on service stability and hardware resource efficiency.
 
-## 2. The Architecture & Tech Stack
+## 2. System Architecture & Resource Management
 
 ![Proxmox VE Dashboard](proxmox-dashboard.png)
+*Proxmox VE Dashboard: Centralized management for all LXC containers and QEMU VMs.*
 
-Based on the environment topology above, the infrastructure is segregated into optimized LXC containers and QEMU VMs to maximize bare-metal resources:
+The infrastructure is designed with a service-isolation approach to maintain stability and maximize bare-metal resources:
 
-*   **Hypervisor:** Proxmox VE 8.x
-*   **Core Routing (QEMU VM):** MikroTik CHR v7 serving as the main network gateway, handling VLANs and load balancing.
-*   **Observability & Monitoring (LXC):** `uptimekuma` for real-time tracking of service health and network latency.
-*   **Zero Trust & Security (LXC):** `cloudflared` for secure external tunneling and `adguard` for network-wide DNS filtering and ad-blocking.
-*   **Web Server & Production Apps (LXC):** 
-    *   `moodle` & `garuda-cbt`: High-concurrency examination platforms.
-    *   `nextcloud` & `onlyoffice`: Self-hosted, on-premise document collaboration suite.
-*   **Network Hacks & Optimization:** `nginx-ncsibypass` engineered specifically to spoof Microsoft's Network Connectivity Status Indicator.
+* **Core Routing:** MikroTik CHR v7 (VM) acting as the network gateway, handling VLAN distribution and client bandwidth management.
+* **Security & Access:** `cloudflared` for secure external tunneling and `adguard` for advanced DNS-level protection.
+* **Production Services:** Application clusters for `moodle` & `garuda-cbt` running on LXC to achieve near-zero latency.
+* **Digital Workspace:** `nextcloud` & `onlyoffice` as a self-hosted internal document collaboration suite.
+* **Observability:** `uptimekuma` for real-time health monitoring of all services.
 
-## 3. Key Engineering Highlights
-*   **Resource Efficiency:** Heavily utilized LXC (Linux Containers) over heavy VMs for application deployments, resulting in extremely low CPU usage and minimal RAM footprint.
-*   **Network Segregation:** Kept the network logically separated by putting the core router (MikroTik CHR) inside the hypervisor, creating a true "Router on a Stick" environment within Proxmox.
+## 3. Resilience & Maintenance Strategy
+Despite operating in a single-node environment, data security and service continuity remain top priorities through:
+* **Automated Disaster Recovery:** Implementation of routine backup schedules to external storage to ensure data safety in case of system failure.
+* **Traffic Optimization:** Custom `nginx-ncsibypass` engineering to maintain stable client connectivity within the local network.
+* **Proactive Alerting:** Integrated monitoring with Telegram notifications for rapid response to service anomalies.
+
+## 4. Engineering Highlights
+* **Maximum Resource Efficiency:** Extensive use of LXC (Linux Containers) to run heavy applications, resulting in significantly lower CPU and RAM overhead compared to conventional VMs.
+* **Network Precision:** Implementation of "Router-on-a-Stick" within the hypervisor for clean and secure traffic segmentation.
