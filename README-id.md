@@ -1,3 +1,7 @@
+---
+title: "afn-lab's Homelab Infra"
+---
+
 # Membangun Private Cloud Ketersediaan Tinggi untuk Ekosistem School/Kampus
 
 *Baca dalam bahasa lain: [English](README.md), [Bahasa Indonesia](README-id.md).*
