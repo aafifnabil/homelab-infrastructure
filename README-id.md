@@ -15,7 +15,8 @@ Berdasarkan topologi lingkungan di atas, infrastruktur dipisahkan ke dalam konta
 * **Core Routing (QEMU VM):** MikroTik CHR v7 berfungsi sebagai gerbang jaringan utama, menangani VLAN dan *load balancing*.
 * **Observability & Monitoring (LXC):** `uptimekuma` untuk pelacakan kesehatan layanan dan latensi jaringan secara *real-time*.
 * **Zero Trust & Security (LXC):** `cloudflared` untuk *tunneling* eksternal yang aman dan `adguard` untuk penyaringan DNS dan pemblokiran iklan di seluruh jaringan.
-* **Web Server & Production Apps (LXC):** * `moodle` & `garuda-cbt`: Platform ujian berkonkurensi tinggi.
+* **Web Server & Production Apps (LXC):**
+    * `moodle` & `garuda-cbt`: Platform ujian berkonkurensi tinggi.
     * `nextcloud` & `onlyoffice`: Suite kolaborasi dokumen on-premise yang di-host secara mandiri.
 * **Network Hacks & Optimization:** `nginx-ncsibypass` direkayasa khusus untuk memanipulasi Indikator Status Konektivitas Jaringan milik Microsoft, memaksa perangkat klien untuk tetap terhubung ke jaringan luring lokal selama ujian berlangsung.
 
