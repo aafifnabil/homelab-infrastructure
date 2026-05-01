@@ -1,3 +1,7 @@
+---
+title: "afn-lab's Homelab Infra"
+---
+
 # Architecting a High-Availability Private Cloud for School/Campus Ecosystem
 
 *Read this in other languages: [English](README.md), [Bahasa Indonesia](README-id.md).*
