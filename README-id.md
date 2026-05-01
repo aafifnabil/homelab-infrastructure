@@ -2,32 +2,34 @@
 title: "afn-lab's Homelab Infra"
 ---
 
-# Merancang Private Cloud Hibrida Tingkat Lanjut untuk Ekosistem Pendidikan
+# Merancang Arsitektur Private Cloud & Jaringan Tingkat Lanjut untuk Ekosistem Kampus
 
 *Baca dalam bahasa lain: [English](README.md), [Bahasa Indonesia](README-id.md).*
 
 ## 1. Ringkasan Eksekutif
-Merancang, mendeploy, dan mengelola infrastruktur *Private Cloud* yang sangat teroptimasi menggunakan Proxmox VE. Proyek ini berfungsi sebagai tulang punggung digital institusi pendidikan, direkayasa untuk memberikan kapabilitas hibrida (Jaringan Online & Lokal). Sistem ini dengan mulus menangani **400+ pengguna serentak** selama ujian CBT massal, sekaligus menyediakan manajemen jaringan tingkat lanjut, penyaringan konten, dan lingkungan pengembangan terintegrasi untuk aplikasi kustom.
+Merancang, mendeploy, dan mengelola infrastruktur *Private Cloud* dan Jaringan Tingkat Lanjut secara komprehensif menggunakan Proxmox VE. Dibangun untuk institusi pendidikan, sistem ini secara mulus menangani **400+ pengguna serentak** pada platform CBT. Arsitektur ini menggabungkan rekayasa jaringan yang tangguh, lingkungan akses *hybrid*, dan ruang *DevOps* khusus untuk memberikan performa tinggi, keamanan, dan kapabilitas *zero-downtime*.
 
-## 2. Arsitektur Sistem & Layanan Inti
+## 2. Arsitektur Inti & Layanan
 
 ![Dashboard Proxmox VE](proxmox-dashboard.png)
-*Dashboard Proxmox VE: Manajemen terpusat untuk kontainer LXC, VM QEMU, dan lingkungan Docker.*
+*Dashboard Proxmox VE: Manajemen terpusat untuk kontainer LXC, QEMU VM, dan lingkungan Docker.*
 
-Infrastruktur ini disegmentasi secara ketat untuk memastikan performa, keamanan, dan efisiensi sumber daya:
+Infrastruktur ini disegregasi menjadi beberapa lapisan operasional untuk memastikan keamanan absolut dan efisiensi sumber daya:
 
-* **Routing Inti Tingkat Lanjut (MikroTik CHR):** Otak jaringan yang dikonfigurasi dengan fitur kelas *enterprise* termasuk **Load Balancing**, **Multi-WAN Failover**, dan **VRRP** (Virtual Router Redundancy Protocol) untuk memastikan tidak ada *downtime* pada *gateway* jaringan.
-* **Mesin CBT Hibrida (Online & Offline):** Sistem ujian adaptif yang berjalan di atas LXC ringan. Sistem ini menyediakan akses global melalui Zero Trust Tunnel `cloudflared`, sekaligus mendukung ujian jaringan lokal yang terisolasi menggunakan konfigurasi kustom **`nginx-ncsibypass`** untuk menjaga koneksi klien Windows tetap stabil tanpa akses internet.
-* **Manajemen DNS & Penyaringan Konten:** Penerapan `adguard` terpusat yang bertindak sebagai *DNS sinkhole* untuk memblokir iklan, *malware*, dan menyaring *website* yang tidak pantas, memastikan lingkungan digital yang aman bagi siswa.
-* **Ruang Kerja Digital Mandiri:** Implementasi `nextcloud` yang berfungsi sebagai *file server* privat dan aman untuk administrasi dan kolaborasi data sekolah.
-* **Pengembangan Aplikasi & Kontainerisasi:** Lingkungan **Docker** khusus yang digunakan untuk mengembangkan, menguji, dan meng- *host* **ANSimpleLibrary**—aplikasi manajemen perpustakaan buatan sendiri, membuktikan kapabilitas *Dev/Ops* secara menyeluruh.
+* **Routing Inti & Gateway Lanjutan (MikroTik CHR v7):**
+  * Dikonfigurasi dengan **Load Balancing** dan **Dual-WAN Failover** untuk menjamin konektivitas tanpa gangguan.
+  * Mengimplementasikan **VRRP (Virtual Router Redundancy Protocol)** untuk redundansi *gateway* pada lapisan jaringan.
+* **Keamanan Perusahaan & Filter DNS:**
+  * Menggunakan `adguard` sebagai *DNS sinkhole* untuk pemblokiran iklan di seluruh jaringan, filter situs web berbahaya, dan manajemen akses konten bagi siswa.
+* **Ekosistem E-Learning & CBT Hybrid (`moodle` & `garuda-cbt`):**
+  * **Mode Online:** Akses jarak jauh yang aman dialirkan melalui *Zero Trust Tunnels* (`cloudflared`).
+  * **Mode Ujian Offline Ketat:** Penguncian jaringan lokal untuk mencegah kecurangan. Menggunakan rekayasa **`nginx-ncsibypass`** kustom untuk "mengelabui" perangkat Windows agar mengira ada koneksi internet (mencegah *error captive portal*), padahal akses WAN diputus secara fisik. Siswa dapat ujian tanpa bisa *browsing* internet.
+* **Pusat Kerja Digital Mandiri:**
+  * Menyebarkan `nextcloud` sebagai *file server* internal dan pusat kolaborasi dokumen, menjamin kedaulatan data kampus sepenuhnya.
+* **DevOps & Sandbox Pengembangan Aplikasi:**
+  * Menyediakan lingkungan **Docker** khusus untuk pengujian dan penerapan aplikasi buatan sendiri, secara spesifik menjalankan sistem manajemen perpustakaan mandiri, **ANSimpleLibrary**.
 
-## 3. Strategi Resiliensi & Pemeliharaan
-Untuk memaksimalkan *uptime* dan integritas data pada *hypervisor* tunggal, saya menerapkan kerangka resiliensi yang ketat:
-* **Pemulihan Bencana Otomatis:** *Backup* data terjadwal ke penyimpanan eksternal untuk menjamin *Recovery Time Objective* (RTO) yang cepat.
-* **Optimasi Lalu Lintas:** Penyesuaian antrean *bandwidth* (Queue) dan aturan *routing* di MikroTik untuk mencegah kemacetan saat *login* ujian massal.
-* **Peringatan Proaktif:** Integrasi `uptimekuma` untuk observabilitas *real-time*, mengirimkan notifikasi anomali instan langsung ke Telegram.
-
-## 4. Sorotan Engineering
-* **Kompetensi Full-Stack:** Berhasil menjembatani operasi Infrastruktur (Proxmox, MikroTik, Jaringan) dengan *deployment* Perangkat Lunak (meng- *containerize* aplikasi kustom menggunakan Docker).
-* **Efisiensi Sumber Daya Maksimal:** Penggunaan intensif Linux Containers (LXC) dan Docker dibandingkan VM tradisional, memangkas beban CPU dan RAM secara drastis sambil memaksimalkan *throughput*.
+## 3. Strategi Resiliensi & Optimasi
+* **Pemulihan Bencana Otomatis:** Penjadwalan *backup snapshot* ke penyimpanan eksternal untuk memastikan waktu pemulihan (RTO) yang sangat cepat.
+* **Maksimalisasi Sumber Daya:** Penggunaan strategis LXC untuk layanan produksi dan Docker untuk pengembangan, secara drastis menekan beban CPU/RAM dibandingkan penggunaan VM tradisional.
+* **Observabilitas:** Pemantauan kesehatan sistem terpusat secara *real-time* dan peringatan dini proaktif melalui `uptimekuma` yang terintegrasi dengan bot Telegram.
